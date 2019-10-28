@@ -1,16 +1,7 @@
-document.addEventListener("DOMContentLoaded", init);
+(function() {
 
-// getActiveTab returns focused tab
-function getActiveTab(callback) {
-    browser.tabs.query({currentWindow: true}).then(function(tabs){
-        tabs.forEach(function(tab){
-            if(tab.active) {
-                callback(tab);
-                return;
-            }
-        });
-    });
-}
+console.log("Runnning...");
+var extensionURL = browser.runtime.getURL("alert.html");
 
 // extractLinks calls the dark.fail and extract all urls
 function extractLinks(callback) {
@@ -53,31 +44,12 @@ function getURLs() {
     return defer;
 }
 
-// the main function which is called
-function init() {
-    getActiveTab(function(tab){
-        var tabURL = new URL(tab.url);
-        var origin = tabURL.origin;
-        getURLs().then(function(allUrls) {
-            var ok = allUrls.includes(origin);
-            
-            var elem = document.createElement("P");
-            var t = null;
+getURLs().then(function(allUrls) {
+    var ok = allUrls.includes(window.location.origin);
+    if(!ok) {
+        window.location.href = extensionURL;
+    }
 
-            if(ok) {
-                // valid url
-                t = document.createTextNode(origin+" is a valid onion url");
-                elem.setAttribute("style", "color: green;");
-            }else {
-                // url not found on dark.fail, show the caution
-                t = document.createTextNode(origin+" cannot be found on dark.fail. Proceed with caution!");
-                elem.setAttribute("style", "color: red;");
-            }
-            elem.appendChild(t);
-            document.getElementById("loading").style.display = "none";
-            document.getElementById("results").style.display = "block";
-            document.getElementById("results").appendChild(elem);
-        
-        });
-    });
-}
+});
+
+})();

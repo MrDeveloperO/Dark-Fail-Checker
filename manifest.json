@@ -1,22 +1,31 @@
 {
 
-    "manifest_version": 2,
-    "name": "Dark Fail Checker",
-    "version": "1.0",
-    "description": "Check if onion address matches the address from dark fail",
-  
-    "browser_action": {
-        "default_icon": "icon.jpg",
-        "default_title": "Dark Fail",
-        "default_popup": "index.html",
-        "browser_style": true
-      },
+  "manifest_version": 2,
+  "name": "Dark Fail Checker",
+  "version": "1.0",
+  "description": "Check if onion address matches the address from dark fail",
+  "content_scripts": [{
+    "matches": [
+      "http://*.onion/*",
+      "https://*.onion/*"
+    ],
+    "js": [
+      "script.js"
+    ],
+    "run_at": "document_start",
+    "all_frames": false
+  }],
 
-      "permissions": [
-        "<all_urls>",
-        "tabs",
-        "webRequest",
-        "storage"
-      ]
-  
-  }
+  "web_accessible_resources": [
+    "alert.html"
+  ],
+
+  "permissions": [
+    "<all_urls>",
+    "tabs",
+    "webRequest",
+    "storage",
+    "activeTab"
+  ]
+
+}
